@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+  <title>Scatter Plot</title>
+  <link href='main.css' rel="stylesheet" media="screen">
+<body>
+  <script src="//d3js.org/d3.v4.min.js"></script>
+  <!-- Legend library from http://d3-legend.susielu.com/#usage under Apache-2.0 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.js"></script>
+  <script src="scatter.js"></script>
+  <script src="bar.js"></script>
+  Y Axis: <select id="yaxis">
+    <option value="Global_Sales" selected>Global Sales</option>
+    <option value="NA_Sales">NA Sales</option>
+    <option value="EU_Sales">EU Sales</option>
+    <option value="JP_Sales">JP Sales</option>
+    <option value="Other_Sales">Other Sales</option>
+    <option value="Year_of_Release">Year of Release</option>
+    <option value="Critic_Score">Critic Score</option>
+    <option value="Critic_Count">Critic Count</option>
+    <option value="User_Score">User Score</option>
+    <option value="User_Count">User Count</option>
+  </select>
+  X Axis: <select id="xaxis">
+    <option value="Global_Sales">Global Sales</option>
+    <option value="NA_Sales">NA Sales</option>
+    <option value="EU_Sales">EU Sales</option>
+    <option value="JP_Sales">JP Sales</option>
+    <option value="Other_Sales">Other Sales</option>
+    <option value="Year_of_Release" selected>Year of Release</option>
+    <option value="Critic_Score">Critic Score</option>
+    <option value="Critic_Count">Critic Count</option>
+    <option value="User_Score">User Score</option>
+    <option value="User_Count">User Count</option>
+  </select>
+  Color: <select id="color">
+    <option value="Platform">Platform</option>
+    <option value="Genre" selected>Genre</option>
+    <option value="Year_of_Release">Year of Release</option>
+    <option value="Publisher">Publisher</option>
+  </select>
+  <button id="brush">Brush Disabled</button>
+  <button id="zoom">Zoom Disabled</button>
+  <button id="reset">Reset</button>
+  
+  <div style="display:block;">
+    Filter: 
+    <select id="filter1">
+      <option value="Platform" selected>Platform</option>
+      <option value="Genre">Genre</option>
+      <option value="Year_of_Release">Year of Release</option>
+      <option value="Publisher">Publisher</option>
+    </select>
+    By:
+    <select id="filterOptions1" class="filterOptions">
+    </select>
+    <br/>
+    Filter:
+    <select id="filter2">
+      <option value="Platform">Platform</option>
+      <option value="Genre" selected>Genre</option>
+      <option value="Year_of_Release">Year of Release</option>
+      <option value="Publisher">Publisher</option>
+    </select>
+    By:
+    <select id="filterOptions2" class="filterOptions">
+    </select>
+  </div>
+  <div style="display:table;">
+    <div id="chart" style="display:table-row;">
+      <div id="chart2" style="display:table-cell;"></div>
+    </div>
+  </div>
+  
+</body>

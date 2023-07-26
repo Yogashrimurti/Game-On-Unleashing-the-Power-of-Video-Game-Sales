@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree Map Visualization</title>
+  <style>
+    body {
+      text-align: center;
+      background-color: #464343;
+    }
+
+    svg {
+      border: 2px solid black;
+      background: transparent;
+    }
+
+    #legend {
+      border: 1px solid black;
+      background: honeydew;
+    }
+
+    .legend-item {
+      stroke: black;
+      height: 30px;
+      width: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <body>
+    <h1 class="center title" style="padding-top: 30px;padding-bottom:5px;">GAME ON!</h1> 
+    <img src="capoo-blue-cat.gif" alt="cat" class = "center" style="width:100px; height:100px;">
+    <h2 class="center title">Top 100 Video Games Grouped by Platform </h2>
+  <h1 id="title"></h1>
+  <h2 id="description"></h2>
+  <svg height="550" width="550"></svg>
+  
+  
+
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  
+  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const dataUrl = "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json";
+    const height = 550;
+    const width = 550;
+    const colors = ["teal", "skyblue", "lightblue", "blue", "orange", "rgb(255, 145, 0)", "lightgreen", "green", "darkgreen", "orangered", "red", "purple", "indigo", "maroon", "orchid", "magenta", "beige", "yellow"];
+
+    let dataset;
+    let tileInfo;
+    let categ;
+
+    makeTheThang = () => {
+      let hierarchy = d3.hierarchy(dataset, (node) => {
+        return node['children']
+      }).sum((node) => {
+        return node['value']
+      }).sort((node1, node2) => {
+        return node2['value'] - node1['value']
+      })
+
+      let createTreeMap = d3.treemap()
+        .size([width, height])
+
+      createTreeMap(hierarchy)
+
+      tileInfo = hierarchy.leaves()
+
+      let tiles = svg.selectAll("g")
+        .data(tileInfo)
+        .enter()
+        .append('g')
+        .attr("transform", (d) => {
+          return "translate(" + d['x0'] + ", " + d['y0'] + ")"
+        })
+
+      const tooltip = d3.select("body")
+        .selectAll(".tile")
+        .data(tileInfo)
+        .enter()
+        .append("div")
+        .attr("class", "tooltip")
+        .style("padding", " 10px")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("background", "rgb(134, 158, 173)")
+        .style("border", "2px solid white")
+        .style("box-shadow", "1px 1px 1px grey")
+        .style("border-radius", "10px")
+        .style("line-height", "1.5")
+        .style("text-align", "center");
+
+      tiles.append("rect")
+        .attr("class", "tile")
+        .attr("stroke", "grey")
+        .attr("fill", (d) => {
+          categ = d.data.category;
+          if (categ === "Wii") {
+            return colors[0];
+          } else if (categ === "NES") {
+            return colors[1];
+          } else if (categ === "SNES") {
+            return colors[2];
+          } else if (categ === "N64") {
+            return colors[3];
+          } else if (categ === "DS") {
+            return colors[4];
+          } else if (categ === "3DS") {
+            return colors[5];
+          } else if (categ === "XB") {
+            return colors[6];
+          } else if (categ === "X360") {
+            return colors[7];
+          } else if (categ === "XOne") {
+            return colors[8];
+          } else if (categ === "GB") {
+            return colors[9];
+          } else if (categ === "GBA") {
+            return colors[10];
+          } else if (categ === "PS") {
+            return colors[11];
+          } else if (categ === "PS2") {
+            return colors[12];
+          } else if (categ === "PS3") {
+            return colors[13];
+          } else if (categ === "PS4") {
+            return colors[14];
+          } else if (categ === "PSP") {
+            return colors[15];
+          } else if (categ === "PC") {
+            return colors[16];
+          } else if (categ === "2600") {
+            return colors[17];
+          }
+        })
+        .attr("data-name", (d) => d.data.name)
+        .attr("data-category", (d) => d.data.category)
+        .attr("data-value", (d) => d.data.value)
+        .attr("height", (d) => {
+          return d['y1'] - d['y0']
+        })
+        .attr("width", (d) => {
+          return d['x1'] - d['x0']
+        })
+        .on("mouseover", function (d) {
+          tooltip.style("visibility", "visible")
+            .html((d) => {
+              let system = this.getAttribute("data-category");
+              let gameName = this.getAttribute("data-name");
+              let value = this.getAttribute("data-value");
+              return gameName + "- <br> " + system + ": <br>Copies Sold:  " + value + " Million";
+            })
+            .attr("data-value", () => {
+              return this.getAttribute("data-value")
+            });
+        })
+        .on("mousemove", function (e) {
+          return tooltip.style('left', (e.pageX + 10) + "px").style('top', (e.pageY + 10) + 'px');
+        })
+        .on("mouseout", function () {
+          return tooltip.style("visibility", "hidden");
+        });
+
+      tiles.append("text")
+        .attr("x", "10px")
+        .attr("y", "10px")
+        .style("font-size", "10px")
+        .html((d) => d.data.name + "- " + d.data.value)
+    }
+
+    const svg = d3.select("svg")
+      .style("text-align", "center");
+
+    d3.json(dataUrl).then(
+      (data, error) => {
+        if (error) {
+          console.log(error);
+        } else {
+          dataset = data;
+          makeTheThang();
+        }
+      }
+    )
+
+    d3.select("body")
+    .append("h3")
+    .text("Legend: (Hover over color for system guide)")
+
+const legend = d3.select("body")
+    .append("svg")
+    .attr("id", "legend")
+    .attr("height", "105px")
+    .attr("width", "610px")
+    .style("border", "1px solid black")   
+    .style("background", "honeydew")
+
+let legendGroup = legend.selectAll("g")
+    .data(colors)
+    .enter()
+    .append("g")
+    
+legendGroup.selectAll('rect')
+    .data(colors)
+    .enter()
+    .append("rect")
+    .attr("fill", (d)=> d)
+    .attr("stroke", "black")
+    .attr("height", "30px")
+    .attr("width", "50px")
+    .attr("class", "legend-item")
+    .attr("x", (d, i)=>{if (i < colors.length/2){return (20 + i*65)}else{return (20 + (i-colors.length/2)*65)}})
+    .attr("y", (d, i)=> {if (i < colors.length/2){return 15}else{return 60}})
+    .append("title")
+    .text((d)=> {if (d === colors[0]){return "Nintendo Wii"}
+        else if (d === colors[1]){return "Nintendo Entertainment System"}
+        else if (d === colors[2]){return "Super Nintendo Entertainment System"}
+        else if (d === colors[3]){return "Nintendo 64"}
+        else if (d === colors[4]){return "DS"}
+        else if (d === colors[5]){return "3DS"}
+        else if (d === colors[6]){return "XBox"}
+        else if (d === colors[7]){return "XBox360"}
+        else if (d === colors[8]){return "XOne"}
+        else if (d === colors[9]){return "GameBoy"}
+        else if (d === colors[10]){return "GBA"}
+        else if (d === colors[11]){return "PlayStation"}
+        else if (d === colors[12]){return "PlayStation 2"}
+        else if (d === colors[13]){return "PlayStation 3"}
+        else if (d === colors[14]){return "PlayStation 4"}
+        else if (d === colors[15]){return "PlayStation P?"}
+        else if (d === colors[16]){return "Personal Computer"}
+        else if (d === colors[17]){return "2600"}})
+
+legendGroup.selectAll("text")
+.data(colors)
+.enter()
+.append("text")
+.attr("x", (d, i)=>{if (i < colors.length/2){return (25 + i*65)}else{return (25 + (i-colors.length/2)*65)}})
+.attr("y", (d, i)=> {if (i < colors.length/2){return 35}else{return 80}})
+
+.text((d)=> {if (d === colors[0]){return "Wii"}
+        else if (d === colors[1]){return "NES"}
+        else if (d === colors[2]){return "SNES"}
+        else if (d === colors[3]){return "N64"}
+        else if (d === colors[4]){return "DS"}
+        else if (d === colors[5]){return "3DS"}
+        else if (d === colors[6]){return "XB"}
+        else if (d === colors[7]){return "X360"}
+        else if (d === colors[8]){return "XOne"}
+        else if (d === colors[9]){return "GB"}
+        else if (d === colors[10]){return "GBA"}
+        else if (d === colors[11]){return "PS"}
+        else if (d === colors[12]){return "PS2"}
+        else if (d === colors[13]){return "PS3"}
+        else if (d === colors[14]){return "PS4"}
+        else if (d === colors[15]){return "PSP"}
+        else if (d === colors[16]){return "PC"}
+        else if (d === colors[17]){return "2600"}})
+    
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+  
+      <script>
+        // Create an SVG element
+        var svg = d3.select("body")
+          .append("svg")
+          .attr("id", "chart")
+          .attr("width", 800)
+          .attr("height", 100);
+
+        // Add a text element for the header title
+        var title = svg.append("text")
+          .text("Game On!")
+          .attr("x", 400) // Adjust the x-coordinate to center the text
+          .attr("y", 60) // Adjust the y-coordinate to position the text vertically
+          .attr("text-anchor", "middle") // Set the text anchor to the middle
+          .attr("font-size", "40px") // Set the font size
+          .attr("font-weight", "bold") // Set the font weight
+          .attr("fill", "white"); // Set the text color
+
+        // Add a subtitle element
+        var subtitle = svg.append("text")
+          .text("Unleashing the Power of Video Game Sales")
+          .attr("x", 400) // Adjust the x-coordinate to center the text
+          .attr("y", 90) // Adjust the y-coordinate to position the text vertically
+          .attr("text-anchor", "middle") // Set the text anchor to the middle
+          .attr("font-size", "20px") // Set the font size
+          .attr("fill", "white"); // Set the text color
+
+        // Add a line element below the title
+        var line = svg.append("line")
+          .attr("x1", 10000) // Adjust the x-coordinate of the starting point of the line
+          .attr("y1", 70) // Adjust the y-coordinate of the starting point of the line
+          .attr("x2", 40) // Adjust the x-coordinate of the ending point of the line
+          .attr("y2", 100) // Adjust the y-coordinate of the ending point of the line
+          .attr("stroke", "white") // Set the line color to white
+          .attr("stroke-width", 2); // Set the line widthS
+
+  </script>
